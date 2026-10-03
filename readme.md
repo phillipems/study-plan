@@ -23,4 +23,4 @@ It will be developed as a modern web application using React, TypeScript, and Vi
 
 ## Project Status
 
-Early development — environment setup and initial project configuration.
+Early development — environment setup and initial project configuration (in progress).

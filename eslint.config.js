@@ -6,11 +6,11 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-// Module dependency rules (see CLAUDE.md). Imports reach other modules either
+// Module dependency rules. Imports reach other modules either
 // through the "@/" alias or by climbing with "../".
 const moduleImport = (modules) => ({
   regex: `^(@/|(\\.\\./)+)(${modules.join("|")})(/|$)`,
-  message: "This module must not depend on that layer (see CLAUDE.md).",
+  message: "This module must not depend on that layer.",
 });
 
 const featureInternals = {

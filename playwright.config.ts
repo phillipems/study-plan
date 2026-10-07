@@ -6,7 +6,8 @@ const port = 4273;
 export default defineConfig({
   testDir: "./tests/e2e",
   forbidOnly: !!process.env.CI,
-  reporter: "list",
+  // In CI the HTML report is uploaded as an artifact when a test fails.
+  reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
   use: {
     baseURL: `http://localhost:${port}`,
     trace: "retain-on-failure",

@@ -58,13 +58,14 @@ export function GoalForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor={`${id}-name`}>Nome</Label>
         <Input
           ref={nameRef}
           id={`${id}-name`}
           value={name}
+          className="h-11 border-transparent bg-paper text-base text-ink focus-visible:border-primary focus-visible:ring-primary md:text-base"
           onChange={(event) => setName(event.target.value)}
           aria-required="true"
           aria-invalid={errors.name ? true : undefined}
@@ -83,6 +84,7 @@ export function GoalForm() {
           ref={descriptionRef}
           id={`${id}-description`}
           value={description}
+          className="min-h-28 wrap-anywhere border-transparent bg-paper text-base text-ink focus-visible:border-primary focus-visible:ring-primary md:text-base"
           onChange={(event) => setDescription(event.target.value)}
           aria-invalid={errors.description ? true : undefined}
           aria-describedby={errors.description ? descriptionErrorId : undefined}
@@ -94,11 +96,15 @@ export function GoalForm() {
         )}
       </div>
 
-      <Button type="submit" disabled={submitting}>
+      <Button
+        type="submit"
+        disabled={submitting}
+        className="h-12 w-full rounded-full text-base font-semibold hover:bg-[color-mix(in_oklab,var(--primary),white_18%)] focus-visible:ring-ring"
+      >
         Criar objetivo
       </Button>
 
-      <p role="status" className="text-sm">
+      <p role="status" className="min-h-5 text-sm font-medium">
         {outcome === "created" && "Objetivo criado."}
       </p>
       {outcome === "failed" && (

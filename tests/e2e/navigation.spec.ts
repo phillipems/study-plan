@@ -5,7 +5,10 @@ test("loads the home page", async ({ page }) => {
 
   await expect(page).toHaveTitle("Study Plan");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Início" }),
+    page.getByRole("heading", {
+      level: 1,
+      name: "Seu aprendizado começa aqui.",
+    }),
   ).toBeVisible();
 });
 
@@ -33,6 +36,9 @@ test("returns to the home page through the link", async ({ page }) => {
 
   await expect(page).toHaveURL(/#\/$/);
   await expect(
-    page.getByRole("heading", { level: 1, name: "Início" }),
+    page.getByRole("heading", {
+      level: 1,
+      name: "Seu aprendizado começa aqui.",
+    }),
   ).toBeVisible();
 });

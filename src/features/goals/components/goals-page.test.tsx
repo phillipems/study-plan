@@ -14,7 +14,8 @@ afterEach(async () => {
   await db.table("goals").clear();
 });
 
-const emptyMessage = "Você ainda não tem objetivos. Crie o primeiro acima.";
+const emptyMessage =
+  "Você ainda não tem objetivos. Crie o primeiro para começar.";
 
 async function renderLoadedPage() {
   render(<GoalsPage />);

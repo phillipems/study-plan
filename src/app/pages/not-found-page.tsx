@@ -3,14 +3,19 @@ import { Button } from "@/shared/ui/button";
 
 export function NotFoundPage() {
   return (
-    <section className="space-y-4">
-      <h1 className="text-3xl font-semibold tracking-tight">
+    <section className="space-y-6">
+      <p className="text-eyebrow text-muted-foreground">Endereço inválido</p>
+      <h1 className="text-display text-page uppercase">
         Página não encontrada
       </h1>
-      <p className="text-lg text-muted-foreground">
+      <p className="max-w-xl text-lg text-muted-foreground">
         O endereço acessado não existe nesta aplicação.
       </p>
-      <Button asChild variant="outline">
+      <Button
+        asChild
+        variant="outline"
+        className="h-12 rounded-full border-2 border-foreground px-6 text-base font-semibold focus-visible:ring-ring"
+      >
         <Link to="/">Voltar para o início</Link>
       </Button>
     </section>

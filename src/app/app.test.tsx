@@ -6,7 +6,10 @@ test("renders the home page inside the application shell", async () => {
   render(<App />);
 
   expect(
-    await screen.findByRole("heading", { level: 1, name: "Início" }),
+    await screen.findByRole("heading", {
+      level: 1,
+      name: "Seu aprendizado começa aqui.",
+    }),
   ).toBeInTheDocument();
   expect(screen.getByRole("link", { name: "Study Plan" })).toBeInTheDocument();
 });

@@ -16,17 +16,23 @@ export function GoalsPage() {
 
   return (
     <div className="max-w-2xl space-y-10">
-      <h1 className="text-2xl font-semibold">Objetivos</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">Objetivos</h1>
 
       <section aria-labelledby="new-goal-heading" className="space-y-4">
-        <h2 id="new-goal-heading" className="text-lg font-medium">
+        <h2
+          id="new-goal-heading"
+          className="text-xl font-semibold tracking-tight"
+        >
           Novo objetivo
         </h2>
         <GoalForm />
       </section>
 
       <section aria-labelledby="goal-list-heading" className="space-y-4">
-        <h2 id="goal-list-heading" className="text-lg font-medium">
+        <h2
+          id="goal-list-heading"
+          className="text-xl font-semibold tracking-tight"
+        >
           Seus objetivos
         </h2>
         <GoalList state={state ?? { status: "loading" }} />

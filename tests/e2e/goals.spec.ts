@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-const emptyMessage = "Você ainda não tem objetivos. Crie o primeiro acima.";
+const emptyMessage =
+  "Você ainda não tem objetivos. Crie o primeiro para começar.";
 
 test("shows guidance when there are no goals", async ({ page }) => {
   await page.goto("/#/goals");

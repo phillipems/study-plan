@@ -1,8 +1,26 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@fontsource-variable/bricolage-grotesque/wdth.css";
+@import "@fontsource-variable/instrument-sans";
 
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    "Bricolage Grotesque Variable", "Instrument Sans Variable", ui-sans-serif,
+    system-ui, sans-serif;
+
+  /* Fixed brand colours, for the few places that must not follow the surface. */
+  --color-cream: #f4ede0;
+  --color-paper: #fbf7ee;
+  --color-ink: #12120f;
+
+  /* Fluid sizes for display headings. */
+  --text-hero: clamp(2.75rem, 1.5rem + 6vw, 6rem);
+  --text-page: clamp(2.25rem, 1.5rem + 3.6vw, 4rem);
+}
 
 @theme inline {
   --color-sidebar-ring: var(--sidebar-ring);
@@ -46,30 +64,30 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --background: #f4ede0;
+  --foreground: #12120f;
+  --card: #fbf7ee;
+  --card-foreground: #12120f;
+  --popover: #fbf7ee;
+  --popover-foreground: #12120f;
+  --primary: #ff5a1f;
+  --primary-foreground: #12120f;
+  --secondary: #e9e0ce;
+  --secondary-foreground: #12120f;
+  --muted: #ebe3d3;
+  --muted-foreground: #5c5a52;
+  --accent: #e9e0ce;
+  --accent-foreground: #12120f;
+  --destructive: #b42318;
+  --border: rgb(18 18 15 / 16%);
+  --input: rgb(18 18 15 / 40%);
+  --ring: #12120f;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 0.875rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -112,6 +130,46 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Dark panel: re-maps the semantic tokens, so components placed inside it
+   follow the surface without any change of their own. */
+.surface-ink {
+  --background: #12120f;
+  --foreground: #f4ede0;
+  --card: #1d1d19;
+  --card-foreground: #f4ede0;
+  --secondary: #26261f;
+  --secondary-foreground: #f4ede0;
+  --muted: #26261f;
+  --muted-foreground: #b8b2a4;
+  --accent: #26261f;
+  --accent-foreground: #f4ede0;
+  --destructive: #ff9c8a;
+  --border: rgb(244 237 224 / 18%);
+  --input: rgb(244 237 224 / 40%);
+  --ring: #f4ede0;
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Condensed display type: headings and highlights only, never body text. */
+@utility text-display {
+  font-family: var(--font-display);
+  font-stretch: 75%;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+
+/* Small uppercase label placed above a heading. */
+@utility text-eyebrow {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 @layer base {

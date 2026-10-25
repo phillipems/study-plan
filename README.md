@@ -6,7 +6,7 @@ A personal workspace for planning, organizing, and tracking continuous learning.
 
 Self-directed learning tends to scatter across tools: goals in one place, plans in another, and no clear record of what was actually studied. Study Plan aims to keep that in a single, focused workspace that runs entirely in the browser, with no account and no server.
 
-The project is built incrementally. Today it covers the first step, defining and managing study goals. The planned next steps are listed in the [Roadmap](#roadmap).
+The project is built incrementally. Today it covers the first steps: managing study goals and the subjects linked to them. The planned next steps are listed in the [Roadmap](#roadmap).
 
 ## Current Features
 
@@ -15,6 +15,7 @@ The project is built incrementally. Today it covers the first step, defining and
 - List the saved goals, most recent first, with empty, loading, and error states.
 - Edit a goal's name and description in a dialog, with the same validation rules; editing keeps the goal in its position.
 - Delete a goal permanently, after an explicit confirmation.
+- Create study subjects, each linked to one or more existing goals, and list them with their goals. A subject requires at least one goal; when there are no goals yet, the page points to the goals page.
 - Local persistence with IndexedDB: goals remain available after reloading or reopening the app in the same browser.
 - Responsive interface, usable from 320 px wide screens to desktop, with keyboard navigation.
 
@@ -73,6 +74,7 @@ corepack pnpm typecheck
 
 - **Local-first:** there is no backend. All data stays in the user's browser.
 - **Persistence:** a single IndexedDB database, accessed through Dexie.js. The schema and its versions are defined in one place, and each feature keeps its own data access code. See [ADR 0001](docs/architecture/adr/0001-local-persistence-with-dexie.md) (in Portuguese).
+- **Subjects and goals:** a subject stores the ids of its goals in a list, so a subject and its links are saved in a single write. See [ADR 0002](docs/architecture/adr/0002-subject-goal-association.md) (in Portuguese).
 - **Feature-first organization:** business code is grouped by feature, and each feature exposes a single public entry point.
 
 The source code is split into four areas:
@@ -84,8 +86,8 @@ The source code is split into four areas:
 | `src/infrastructure` | Shared technical resources, such as the database setup.         |
 | `src/shared`         | Reusable UI components and utilities with no business rules.    |
 
-Dependencies point in one direction: `app` may use everything, features may use `infrastructure` and `shared`, and neither of those depends on a feature. These boundaries are enforced by ESLint.
+Dependencies point in one direction: `app` may use everything, features may use `infrastructure` and `shared`, and neither of those depends on a feature. A feature may use another one only through its public entry point. These boundaries are enforced by ESLint.
 
 ## Project Status
 
-In active development. The technical foundation, the first functional feature (creating, listing, editing, and deleting study goals), and the visual identity are in place. New capabilities are delivered in small increments, following the roadmap above.
+In active development. The technical foundation, study goals (create, list, edit, and delete), study subjects (create and list), and the visual identity are in place. New capabilities are delivered in small increments, following the roadmap above.

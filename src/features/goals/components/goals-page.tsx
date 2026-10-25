@@ -1,10 +1,12 @@
 import { useLiveQuery } from "dexie-react-hooks";
+import { useRef } from "react";
 import { listGoals } from "../goal-repository";
 import { GoalForm } from "./goal-form";
 import { GoalList } from "./goal-list";
 import type { GoalListState } from "./goal-list";
 
 export function GoalsPage() {
+  const listHeadingRef = useRef<HTMLHeadingElement>(null);
   // Runs again whenever the goals table changes, so a saved goal shows up at once.
   const state = useLiveQuery(async (): Promise<GoalListState> => {
     try {
@@ -40,12 +42,17 @@ export function GoalsPage() {
           className="min-w-0 space-y-6"
         >
           <h2
+            ref={listHeadingRef}
             id="goal-list-heading"
-            className="text-display text-3xl uppercase"
+            tabIndex={-1}
+            className="text-display text-3xl uppercase outline-none"
           >
             Seus objetivos
           </h2>
-          <GoalList state={state ?? { status: "loading" }} />
+          <GoalList
+            state={state ?? { status: "loading" }}
+            headingRef={listHeadingRef}
+          />
         </section>
       </div>
     </div>

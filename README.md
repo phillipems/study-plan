@@ -6,13 +6,15 @@ A personal workspace for planning, organizing, and tracking continuous learning.
 
 Self-directed learning tends to scatter across tools: goals in one place, plans in another, and no clear record of what was actually studied. Study Plan aims to keep that in a single, focused workspace that runs entirely in the browser, with no account and no server.
 
-The project is built incrementally. Today it covers the first step, defining study goals. The planned next steps are listed in the [Roadmap](#roadmap).
+The project is built incrementally. Today it covers the first step, defining and managing study goals. The planned next steps are listed in the [Roadmap](#roadmap).
 
 ## Current Features
 
 - Create study goals with a required name and an optional description.
 - Field validation: the name is required and limited to 100 characters, the description is limited to 500 characters, and surrounding whitespace is removed.
 - List the saved goals, most recent first, with empty, loading, and error states.
+- Edit a goal's name and description in a dialog, with the same validation rules; editing keeps the goal in its position.
+- Delete a goal permanently, after an explicit confirmation.
 - Local persistence with IndexedDB: goals remain available after reloading or reopening the app in the same browser.
 - Responsive interface, usable from 320 px wide screens to desktop, with keyboard navigation.
 
@@ -20,7 +22,6 @@ The interface is currently available in Brazilian Portuguese only.
 
 ## Roadmap
 
-- Edit and delete goals.
 - Plan study activities.
 - Mark activities as completed.
 - Record study sessions and time spent.
@@ -28,7 +29,7 @@ The interface is currently available in Brazilian Portuguese only.
 
 ## Tech Stack
 
-- **Frontend and styling:** React 19, TypeScript, React Router, Tailwind CSS 4, and shadcn/ui components, with the Bricolage Grotesque and Instrument Sans typefaces.
+- **Frontend and styling:** React 19, TypeScript, React Router, Tailwind CSS 4, shadcn/ui components, and Lucide icons, with the Bricolage Grotesque and Instrument Sans typefaces.
 - **Persistence:** IndexedDB through Dexie.js.
 - **Testing and quality:** Vitest and React Testing Library for unit and component tests, Playwright for end-to-end tests, ESLint, and Prettier.
 - **Build and automation:** Vite, pnpm, and a GitHub Actions workflow that runs every check on pull requests and on `main`.
@@ -87,4 +88,4 @@ Dependencies point in one direction: `app` may use everything, features may use 
 
 ## Project Status
 
-In active development. The technical foundation, the first functional feature (study goals), and the visual identity are in place. New capabilities are delivered in small increments, following the roadmap above.
+In active development. The technical foundation, the first functional feature (creating, listing, editing, and deleting study goals), and the visual identity are in place. New capabilities are delivered in small increments, following the roadmap above.

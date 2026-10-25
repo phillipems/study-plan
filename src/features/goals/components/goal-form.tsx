@@ -1,24 +1,11 @@
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { SubmitEvent } from "react";
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
-import { Textarea } from "@/shared/ui/textarea";
 import { createGoal } from "../create-goal";
-import { GOAL_DESCRIPTION_MAX_LENGTH, GOAL_NAME_MAX_LENGTH } from "../goal";
 import type { GoalInputErrors } from "../goal";
-
-const nameMessages = {
-  required: "Informe o nome do objetivo.",
-  "too-long": `O nome deve ter no máximo ${GOAL_NAME_MAX_LENGTH} caracteres.`,
-};
-
-const descriptionMessages = {
-  "too-long": `A descrição deve ter no máximo ${GOAL_DESCRIPTION_MAX_LENGTH} caracteres.`,
-};
+import { GoalFields } from "./goal-fields";
 
 export function GoalForm() {
-  const id = useId();
   const nameRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [name, setName] = useState("");
@@ -26,9 +13,6 @@ export function GoalForm() {
   const [errors, setErrors] = useState<GoalInputErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [outcome, setOutcome] = useState<"created" | "failed" | null>(null);
-
-  const nameErrorId = `${id}-name-error`;
-  const descriptionErrorId = `${id}-description-error`;
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -59,42 +43,15 @@ export function GoalForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor={`${id}-name`}>Nome</Label>
-        <Input
-          ref={nameRef}
-          id={`${id}-name`}
-          value={name}
-          className="h-11 border-transparent bg-paper text-base text-ink focus-visible:border-primary focus-visible:ring-primary md:text-base"
-          onChange={(event) => setName(event.target.value)}
-          aria-required="true"
-          aria-invalid={errors.name ? true : undefined}
-          aria-describedby={errors.name ? nameErrorId : undefined}
-        />
-        {errors.name && (
-          <p id={nameErrorId} className="text-sm text-destructive">
-            {nameMessages[errors.name]}
-          </p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor={`${id}-description`}>Descrição (opcional)</Label>
-        <Textarea
-          ref={descriptionRef}
-          id={`${id}-description`}
-          value={description}
-          className="min-h-28 wrap-anywhere border-transparent bg-paper text-base text-ink focus-visible:border-primary focus-visible:ring-primary md:text-base"
-          onChange={(event) => setDescription(event.target.value)}
-          aria-invalid={errors.description ? true : undefined}
-          aria-describedby={errors.description ? descriptionErrorId : undefined}
-        />
-        {errors.description && (
-          <p id={descriptionErrorId} className="text-sm text-destructive">
-            {descriptionMessages[errors.description]}
-          </p>
-        )}
-      </div>
+      <GoalFields
+        name={name}
+        description={description}
+        errors={errors}
+        onNameChange={setName}
+        onDescriptionChange={setDescription}
+        nameRef={nameRef}
+        descriptionRef={descriptionRef}
+      />
 
       <Button
         type="submit"

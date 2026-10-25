@@ -1,8 +1,9 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, test, vi } from "vitest";
 import { db } from "@/infrastructure/database/database";
-import { addGoal, listGoals } from "../goal-repository";
+import type { Goal } from "../goal";
+import { addGoal, deleteGoal, listGoals, updateGoal } from "../goal-repository";
 import { GoalsPage } from "./goals-page";
 
 // Keeps the real repository, but lets a test force a persistence failure.
@@ -11,6 +12,8 @@ vi.mock("../goal-repository", { spy: true });
 afterEach(async () => {
   vi.mocked(addGoal).mockReset();
   vi.mocked(listGoals).mockReset();
+  vi.mocked(updateGoal).mockReset();
+  vi.mocked(deleteGoal).mockReset();
   await db.table("goals").clear();
 });
 
@@ -119,4 +122,188 @@ test("reports a failure to load the goals", async () => {
     "Não foi possível carregar os objetivos.",
   );
   expect(screen.getByRole("button", { name: "Criar objetivo" })).toBeEnabled();
+});
+
+const english: Goal = {
+  id: "goal-english",
+  name: "Inglês",
+  description: "Leitura técnica",
+  createdAt: "2026-01-01T10:00:00.000Z",
+};
+
+const physics: Goal = {
+  id: "goal-physics",
+  name: "Física",
+  createdAt: "2026-01-02T10:00:00.000Z",
+};
+
+async function renderWithGoals() {
+  await addGoal(english);
+  await addGoal(physics);
+  render(<GoalsPage />);
+  await screen.findAllByRole("listitem");
+  return userEvent.setup();
+}
+
+async function chooseAction(
+  user: ReturnType<typeof userEvent.setup>,
+  goalName: string,
+  action: "Editar" | "Excluir",
+) {
+  await user.click(
+    screen.getByRole("button", { name: `Ações para "${goalName}"` }),
+  );
+  await user.click(await screen.findByRole("menuitem", { name: action }));
+}
+
+// hidden: an open dialog marks the rest of the page as aria-hidden.
+function cardNames() {
+  return screen
+    .getAllByRole("listitem", { hidden: true })
+    .map((item) => item.querySelector("p")?.textContent);
+}
+
+test("opens the edit dialog with the current name and description", async () => {
+  const user = await renderWithGoals();
+
+  await chooseAction(user, "Inglês", "Editar");
+
+  const dialog = await screen.findByRole("dialog", { name: "Editar objetivo" });
+  expect(within(dialog).getByLabelText("Nome")).toHaveValue("Inglês");
+  expect(within(dialog).getByLabelText("Descrição (opcional)")).toHaveValue(
+    "Leitura técnica",
+  );
+});
+
+test("saves the changes and keeps the goal in its position", async () => {
+  const user = await renderWithGoals();
+
+  await chooseAction(user, "Inglês", "Editar");
+  const dialog = await screen.findByRole("dialog");
+  await user.clear(within(dialog).getByLabelText("Nome"));
+  await user.type(within(dialog).getByLabelText("Nome"), "Inglês técnico");
+  await user.clear(within(dialog).getByLabelText("Descrição (opcional)"));
+  await user.click(
+    within(dialog).getByRole("button", { name: "Salvar alterações" }),
+  );
+
+  expect(await screen.findByText("Objetivo atualizado.")).toBeInTheDocument();
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(cardNames()).toEqual(["Física", "Inglês técnico"]);
+  expect(screen.queryByText("Leitura técnica")).not.toBeInTheDocument();
+});
+
+test("does not save a blank name", async () => {
+  const user = await renderWithGoals();
+
+  await chooseAction(user, "Inglês", "Editar");
+  const dialog = await screen.findByRole("dialog");
+  await user.clear(within(dialog).getByLabelText("Nome"));
+  await user.type(within(dialog).getByLabelText("Nome"), "   ");
+  await user.click(
+    within(dialog).getByRole("button", { name: "Salvar alterações" }),
+  );
+
+  expect(
+    await within(dialog).findByText("Informe o nome do objetivo."),
+  ).toBeInTheDocument();
+  expect(within(dialog).getByLabelText("Nome")).toHaveFocus();
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
+  expect(await listGoals()).toEqual([physics, english]);
+});
+
+test("discards the changes when the edit is cancelled", async () => {
+  const user = await renderWithGoals();
+
+  await chooseAction(user, "Inglês", "Editar");
+  const dialog = await screen.findByRole("dialog");
+  await user.type(within(dialog).getByLabelText("Nome"), " alterado");
+  await user.click(within(dialog).getByRole("button", { name: "Cancelar" }));
+
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(cardNames()).toEqual(["Física", "Inglês"]);
+  await waitFor(() =>
+    expect(
+      screen.getByRole("button", { name: 'Ações para "Inglês"' }),
+    ).toHaveFocus(),
+  );
+  expect(await listGoals()).toEqual([physics, english]);
+
+  await chooseAction(user, "Inglês", "Editar");
+  expect(
+    within(await screen.findByRole("dialog")).getByLabelText("Nome"),
+  ).toHaveValue("Inglês");
+});
+
+test("deletes a goal after confirmation", async () => {
+  const user = await renderWithGoals();
+
+  await chooseAction(user, "Inglês", "Excluir");
+  const dialog = await screen.findByRole("alertdialog", {
+    name: "Excluir objetivo?",
+  });
+  expect(dialog).toHaveTextContent("Inglês");
+  expect(dialog).toHaveTextContent("Esta ação não pode ser desfeita.");
+  await user.click(within(dialog).getByRole("button", { name: "Excluir" }));
+
+  expect(await screen.findByText("Objetivo excluído.")).toBeInTheDocument();
+  expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  expect(cardNames()).toEqual(["Física"]);
+  expect(await listGoals()).toEqual([physics]);
+  await waitFor(() =>
+    expect(
+      screen.getByRole("heading", { name: "Seus objetivos" }),
+    ).toHaveFocus(),
+  );
+});
+
+test("keeps the goal when the deletion is cancelled", async () => {
+  const user = await renderWithGoals();
+
+  await chooseAction(user, "Inglês", "Excluir");
+  const dialog = await screen.findByRole("alertdialog");
+  await user.click(within(dialog).getByRole("button", { name: "Cancelar" }));
+
+  expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  expect(cardNames()).toEqual(["Física", "Inglês"]);
+  await waitFor(() =>
+    expect(
+      screen.getByRole("button", { name: 'Ações para "Inglês"' }),
+    ).toHaveFocus(),
+  );
+  expect(await listGoals()).toEqual([physics, english]);
+});
+
+test("reports a failure to save the changes without announcing success", async () => {
+  const user = await renderWithGoals();
+  vi.mocked(updateGoal).mockRejectedValueOnce(new Error("write failed"));
+
+  await chooseAction(user, "Inglês", "Editar");
+  const dialog = await screen.findByRole("dialog");
+  await user.type(within(dialog).getByLabelText("Nome"), " técnico");
+  await user.click(
+    within(dialog).getByRole("button", { name: "Salvar alterações" }),
+  );
+
+  expect(await within(dialog).findByRole("alert")).toHaveTextContent(
+    "Não foi possível salvar as alterações. Tente novamente.",
+  );
+  expect(within(dialog).getByLabelText("Nome")).toHaveValue("Inglês técnico");
+  expect(screen.queryByText("Objetivo atualizado.")).not.toBeInTheDocument();
+  expect(await listGoals()).toEqual([physics, english]);
+});
+
+test("reports a failure to delete without announcing success", async () => {
+  const user = await renderWithGoals();
+  vi.mocked(deleteGoal).mockRejectedValueOnce(new Error("write failed"));
+
+  await chooseAction(user, "Inglês", "Excluir");
+  const dialog = await screen.findByRole("alertdialog");
+  await user.click(within(dialog).getByRole("button", { name: "Excluir" }));
+
+  expect(await within(dialog).findByRole("alert")).toHaveTextContent(
+    "Não foi possível excluir o objetivo. Tente novamente.",
+  );
+  expect(screen.queryByText("Objetivo excluído.")).not.toBeInTheDocument();
+  expect(cardNames()).toEqual(["Física", "Inglês"]);
 });

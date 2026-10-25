@@ -14,7 +14,9 @@ export function AppShell() {
         Pular para o conteúdo
       </a>
       <header className="sticky top-0 z-10 border-b-2 border-foreground bg-background/90 backdrop-blur">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+        {/* Below sm, the navigation wraps to its own row: three items do not fit
+            next to the brand at 320 px. */}
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3 sm:h-16 sm:flex-nowrap sm:px-6 sm:py-0">
           <Link
             to="/"
             className={`${focusRing} text-display -mx-1.5 flex items-center gap-2 rounded-md px-1.5 py-1 text-xl whitespace-nowrap uppercase sm:text-2xl`}
@@ -25,12 +27,18 @@ export function AppShell() {
             />
             Study Plan
           </Link>
-          <nav aria-label="Principal" className="flex items-center gap-1.5">
+          <nav
+            aria-label="Principal"
+            className="flex w-full items-center gap-1.5 sm:w-auto"
+          >
             <NavLink to="/" end className={navLink}>
               Início
             </NavLink>
             <NavLink to="/goals" className={navLink}>
               Objetivos
+            </NavLink>
+            <NavLink to="/subjects" className={navLink}>
+              Disciplinas
             </NavLink>
           </nav>
         </div>

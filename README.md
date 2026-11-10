@@ -16,10 +16,16 @@ The project is built incrementally. Today it covers the first steps: managing st
 - Edit a goal's name and description in a dialog, with the same validation rules; editing keeps the goal in its position.
 - Delete a goal permanently, after an explicit confirmation.
 - Create study subjects, each linked to one or more existing goals, and list them with their goals. A subject requires at least one goal; when there are no goals yet, the page points to the goals page.
-- Local persistence with IndexedDB: goals remain available after reloading or reopening the app in the same browser.
+- Local persistence: goals and subjects remain available after reloading or reopening the app in the same browser (see [Data Storage](#data-storage)).
 - Responsive interface, usable from 320 px wide screens to desktop, with keyboard navigation.
 
 The interface is currently available in Brazilian Portuguese only.
+
+## Data Storage
+
+All data is stored locally in your browser, in IndexedDB, through Dexie.js. There is no backend and no account, and data is not synchronized between devices or browsers: what you save in one browser is not available in another.
+
+Clearing this site's data in your browser removes your goals and subjects permanently.
 
 ## Roadmap
 
@@ -72,7 +78,7 @@ corepack pnpm typecheck
 
 ## Architecture
 
-- **Local-first:** there is no backend. All data stays in the user's browser.
+- **Local-first:** there is no backend. All data stays in the user's browser (see [Data Storage](#data-storage)).
 - **Persistence:** a single IndexedDB database, accessed through Dexie.js. The schema and its versions are defined in one place, and each feature keeps its own data access code. See [ADR 0001](docs/architecture/adr/0001-local-persistence-with-dexie.md) (in Portuguese).
 - **Subjects and goals:** a subject stores the ids of its goals in a list, so a subject and its links are saved in a single write. See [ADR 0002](docs/architecture/adr/0002-subject-goal-association.md) (in Portuguese).
 - **Feature-first organization:** business code is grouped by feature, and each feature exposes a single public entry point.

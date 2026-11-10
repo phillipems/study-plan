@@ -84,6 +84,10 @@ test("creates a subject linked to two goals and lists it", async () => {
   const card = (await screen.findByText("Python")).closest("li")!;
   expect(within(card).getByText("Python")).toBeInTheDocument();
   expect(within(card).getByText("Linguagem")).toBeInTheDocument();
+  expect(within(card).getByRole("link", { name: "Python" })).toHaveAttribute(
+    "href",
+    expect.stringMatching(/^\/subjects\/[0-9a-f-]{36}$/),
+  );
   const goals = within(card).getByRole("list", {
     name: "Objetivos vinculados",
   });

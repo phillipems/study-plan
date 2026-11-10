@@ -14,3 +14,12 @@ db.version(2).stores({
   goals: "id, createdAt",
   subjects: "id, createdAt, *goalIds",
 });
+
+// Adds the daily study time of each subject. The primary key is the pair
+// [subjectId+date], so there is at most one total per subject and day, and a
+// week is read as a key range.
+db.version(3).stores({
+  goals: "id, createdAt",
+  subjects: "id, createdAt, *goalIds",
+  studyTime: "[subjectId+date]",
+});

@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import type { Goal } from "@/features/goals";
 import type { Subject } from "../subject";
 
@@ -58,11 +59,15 @@ export function SubjectList({ state }: { state: SubjectListState }) {
         return (
           <li
             key={subject.id}
-            className="flex flex-col gap-3 rounded-2xl border-2 border-foreground bg-card p-5"
+            className="relative flex flex-col gap-3 rounded-2xl border-2 border-foreground bg-card p-5 transition-colors hover:bg-secondary/60"
           >
-            <p className="text-display text-2xl wrap-break-word">
+            {/* The whole card opens the subject; the link stays the only focus stop. */}
+            <Link
+              to={`/subjects/${subject.id}`}
+              className="w-fit rounded-md text-display text-2xl wrap-break-word outline-offset-2 outline-foreground after:absolute after:inset-0 after:rounded-2xl hover:underline focus-visible:outline-2"
+            >
               {subject.name}
-            </p>
+            </Link>
             {subject.description && (
               <p className="text-sm wrap-break-word whitespace-pre-line text-muted-foreground">
                 {subject.description}

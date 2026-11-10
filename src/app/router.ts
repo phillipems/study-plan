@@ -3,6 +3,7 @@ import { AppShell } from "@/app/app-shell";
 import { HomePage } from "@/app/pages/home-page";
 import { NotFoundPage } from "@/app/pages/not-found-page";
 import { GoalsPage } from "@/features/goals";
+import { SubjectStudyTimePage } from "@/features/study-time";
 import { SubjectsPage } from "@/features/subjects";
 
 // Hash-based routing: GitHub Pages serves static files only and cannot
@@ -14,6 +15,7 @@ export const router = createHashRouter([
       { index: true, Component: HomePage },
       { path: "goals", Component: GoalsPage },
       { path: "subjects", Component: SubjectsPage },
+      { path: "subjects/:subjectId", Component: SubjectStudyTimePage },
       { path: "*", Component: NotFoundPage },
     ],
   },

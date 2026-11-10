@@ -6,7 +6,7 @@ A personal workspace for planning, organizing, and tracking continuous learning.
 
 Self-directed learning tends to scatter across tools: goals in one place, plans in another, and no clear record of what was actually studied. Study Plan aims to keep that in a single, focused workspace that runs entirely in the browser, with no account and no server.
 
-The project is built incrementally. Today it covers the first steps: managing study goals and the subjects linked to them. The planned next steps are listed in the [Roadmap](#roadmap).
+The project is built incrementally. Today it covers the first steps: managing study goals, the subjects linked to them, and the time studied in each subject. The planned next steps are listed in the [Roadmap](#roadmap).
 
 ## Current Features
 
@@ -16,7 +16,8 @@ The project is built incrementally. Today it covers the first steps: managing st
 - Edit a goal's name and description in a dialog, with the same validation rules; editing keeps the goal in its position.
 - Delete a goal permanently, after an explicit confirmation.
 - Create study subjects, each linked to one or more existing goals, and list them with their goals. A subject requires at least one goal; when there are no goals yet, the page points to the goals page.
-- Local persistence: goals and subjects remain available after reloading or reopening the app in the same browser (see [Data Storage](#data-storage)).
+- Open a subject to see a week, Monday to Sunday, and record, edit, or remove the total time studied on each day, in hours and minutes (up to 23:59 per day). Past weeks can be browsed; future weeks cannot, and days after today cannot be recorded.
+- Local persistence: goals, subjects, and study time remain available after reloading or reopening the app in the same browser (see [Data Storage](#data-storage)).
 - Responsive interface, usable from 320 px wide screens to desktop, with keyboard navigation.
 
 The interface is currently available in Brazilian Portuguese only.
@@ -25,13 +26,13 @@ The interface is currently available in Brazilian Portuguese only.
 
 All data is stored locally in your browser, in IndexedDB, through Dexie.js. There is no backend and no account, and data is not synchronized between devices or browsers: what you save in one browser is not available in another.
 
-Clearing this site's data in your browser removes your goals and subjects permanently.
+Clearing this site's data in your browser removes your goals, subjects, and study time permanently.
 
 ## Roadmap
 
 - Plan study activities.
 - Mark activities as completed.
-- Record study sessions and time spent.
+- Record individual study sessions, beyond daily totals.
 - View learning progress and history.
 
 ## Tech Stack
@@ -81,6 +82,7 @@ corepack pnpm typecheck
 - **Local-first:** there is no backend. All data stays in the user's browser (see [Data Storage](#data-storage)).
 - **Persistence:** a single IndexedDB database, accessed through Dexie.js. The schema and its versions are defined in one place, and each feature keeps its own data access code. See [ADR 0001](docs/architecture/adr/0001-local-persistence-with-dexie.md) (in Portuguese).
 - **Subjects and goals:** a subject stores the ids of its goals in a list, so a subject and its links are saved in a single write. See [ADR 0002](docs/architecture/adr/0002-subject-goal-association.md) (in Portuguese).
+- **Study time:** one total per subject and calendar day, keyed by the pair subject and date, so saving again replaces the total. Dates are stored as local calendar days. See [ADR 0003](docs/architecture/adr/0003-daily-study-time.md) (in Portuguese).
 - **Feature-first organization:** business code is grouped by feature, and each feature exposes a single public entry point.
 
 The source code is split into four areas:
@@ -96,4 +98,4 @@ Dependencies point in one direction: `app` may use everything, features may use 
 
 ## Project Status
 
-In active development. The technical foundation, study goals (create, list, edit, and delete), study subjects (create and list), and the visual identity are in place. New capabilities are delivered in small increments, following the roadmap above.
+In active development. The technical foundation, study goals (create, list, edit, and delete), study subjects (create and list), weekly study time per subject, and the visual identity are in place. New capabilities are delivered in small increments, following the roadmap above.

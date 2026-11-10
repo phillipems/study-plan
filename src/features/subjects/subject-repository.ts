@@ -25,6 +25,11 @@ export function addSubjectWithGoals(
   });
 }
 
+/** Resolves to undefined when there is no subject with this id. */
+export function getSubject(id: string): Promise<Subject | undefined> {
+  return subjects.get(id);
+}
+
 /** Most recent first. */
 export function listSubjects(): Promise<Subject[]> {
   return subjects.orderBy("createdAt").reverse().toArray();
